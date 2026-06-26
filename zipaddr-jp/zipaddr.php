@@ -37,6 +37,7 @@ function zipaddr_jp_change($output, $opt=""){
 	$woocmb= strpos($output, 'woocommerce-billing'); //Woo Commerce
 	$woocms= strpos($output, 'woocommerce-shipping');//Woo Commerce
 	$woocma= strpos($output, 'woocommerce-address'); //Woo Commerce
+	$woocmk= strstr($output, 'wp-block-woocommerce-checkout-'); //Woo Commerce block
 	$welcart=strpos($output, '[zipcode]');        //Welcart
 	$mailpro=strpos($output, 'id="mailformpro"'); //Mailform Pro
 	$mailfor=strpos($output, "mfpc('mailform'");  //Mailform
@@ -59,6 +60,7 @@ function zipaddr_jp_change($output, $opt=""){
 	else if( $wpfms  !==false ) $sid= 6;
 	else if( $visufb !==false ) $sid= 7;
 	else if( $woocmb !==false || $woocms!==false || $woocma!==false ) $sid= 8;
+	else if( !empty($woocmk)  ) $sid= 8;
 	else if( $welcart!==false ) $sid= 9;
 	else if( $mailpro!==false || $mailfor!==false) $sid= 10;
 	else if( $snowmon!==false ) $sid= 11;
@@ -73,6 +75,8 @@ function zipaddr_jp_change($output, $opt=""){
 	if( strpos($output,'zip')!==false || strpos($output,'postc')!==false || $sys_drct!="" ){;} //kword
 	else
 	if( ($wpfms!==false || $visufb!==false) && $yubin!==false ){;}
+	else
+	if( !empty($woocmk) ){;}
 	else  return $output;
 	$apid= "";
 	if( !empty($sid) ) {list($sys_syid,$apid)=explode(",", $sysid[$sid]); $apid=trim($apid);}
@@ -93,12 +97,11 @@ if(isset($_SERVER['HTTPS'])) {$http=(empty($_SERVER['HTTPS'])||$_SERVER['HTTPS']
 		$wk2= strpos($wk,"autozip");
 		if( empty($wk) || $wk2===false ) $lcpath= zipaddr_git.'zipaddr.css'; // 定義がなければ補う
 	 }                                   // 変換の判定開始
-                            $uls= zipaddr_COM.'js/zipaddr7.js';
-	 if( $sys_site == "2" ) $uls= zipaddr_git.   'zipaddr3.js';
-else if( $sys_site == "3" ) $uls= zipaddr_git.   'zipaddr30.js';
-else if( $sys_site == "4" ) $uls= zipaddr_git.   'zipaddrx.js';
-else if( $sys_site == "5" ) $uls= zipaddr_git.   'zipaddra.js';
-//	$pre=($sys_site=="4") ?  "D." : "ZP.";        // prefix
+                           $uls=zipaddr_COM.'js/zipaddr7.js';
+	 if( $sys_site == "2" ) $uls= zipaddr_git. 'zipaddr3.js';
+else if( $sys_site == "3" ) $uls= zipaddr_git. 'zipaddr30.js';
+else if( $sys_site == "4" ) $uls= zipaddr_git. 'zipaddrx.js';
+else if( $sys_site == "5" ) $uls= zipaddr_git. 'zipaddra.js';
 	$pre= "ZP.";                                  // prefix
 //モジュール・ファイル生成
 	$js = $jsfile.' src="'.$uls.'?v='.zipaddr_VERS.'"></script>';
@@ -146,7 +149,18 @@ else if( $sys_site == "5" ) $uls= zipaddr_git.   'zipaddra.js';
 		}
 	}
 	else
+	if( !empty($woocmk) ){
+		$ans= $output;
+		define('zipaddr_url', $uls);              // 参照用
+		add_action('wp_enqueue_scripts', 'zipaddr_jp_scripts');
+	}
+	else
 		$ans= str_ireplace("<form", $js."<form", $output);
 	return $ans;
+}
+function zipaddr_jp_scripts(){
+	wp_enqueue_script('zipaddr-jp-blk', zipaddr_url, array(),get_bloginfo('version'),array('in_footer' => true) );
+	wp_enqueue_script('zipaddr-jp-st2', zipaddr_git.'browsjp_zipaddr.js',array(),'1.4',  array('in_footer' => true) );
+	wp_enqueue_script('zipaddr-jp-st3', zipaddr_git.'woocommerce.js',array(),'1.6',  array('in_footer' => true) );
 }
 ?>
