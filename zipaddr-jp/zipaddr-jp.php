@@ -4,14 +4,14 @@ if( !defined('ABSPATH') ) exit;
 Plugin Name: zipaddr-jp
 Plugin URI: https://zipaddr2.com/wordpress/
 Description: The input convert an address from a zip code automatically.
-Version: 1.44
+Version: 1.45
 Author: Tatsuro, Terunuma
 Author URI: https://pierre-soft.com/
 License: GPLv2 or later
 */
 define('ZIPADDR_JP_PLUGIN_DIR', plugin_dir_path(__FILE__)); // /myplugin/
 define('ZIPADDR_JP_PLUGIN_URL',plugins_url( '', __FILE__));
-define('ZIPADDR_JP_VERS',  '1.44');
+define('ZIPADDR_JP_VERS',  '1.45');
 define('ZIPADDR_JP_KEYS',  'zipaddr-config');
 define('ZIPADDR_JP_SYS',   'sys_');
 define('ZIPADDR_JP_COM',   'https://zipaddr.com/');
